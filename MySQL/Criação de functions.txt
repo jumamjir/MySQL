@@ -1,0 +1,53 @@
+Funções do usuário :
+
+Nos bancos de dados em geral, podemos utilizar as funções pré-existentes no sistema (exemplos now()
+, date(), pow()) e também podemos criar nossas próprias funções. Para criar uma função no MySQL, utilizamos a estrutura abaixo: 
+
+DELIMITER //
+CREATE FUNCTION nome_função(parametro1_da_função, parametro2_da_função, ... )
+RETURNS tipo_de_dado
+[NOT] DETERMINISTIC
+BEGIN
+ -- instruções 
+END //
+DELIMITER ;
+
+
+
+Exemplo
+
+Utilizando a tabela produtos (do esquema classicos), vamos  descobrir a margem de preço 
+dos produtos. 
+A margem é obtida pelo cálculo (preço de venda - preço de custo) / (preço de venda)
+
+Solução
+DELIMITER //
+CREATE FUNCTION margem_venda(preco_venda decimal(10,2), preco_custo decimal(10,2)) 
+RETURNS decimal(10,2) 
+DETERMINISTIC
+BEGIN
+    DECLARE margem decimal(10,2);
+    select round(((preco_venda - preco_custo) / preco_venda), 2) into margem;
+    RETURN margem;
+END //
+DELIMITER ;
+
+Pra demonstrar que deu tudo certo, ou seja, que a função margem() está funcionando, vamos 
+chamá-la.
+
+SELECT codigoProduto, nomeProduto, precoVenda, precoCusto, margem(precoVenda, precoCusto) Margem
+  from classicos.produtos;
+
+Teste : 
+select margem_venda(110, 100);
+
+Retorna o valor 0.09 que é (110 - 100) / 110
+
+
+Exercício :
+
+Crie uma função para calcular o preço de venda. 
+Parametros de entrada : preço de custo e margem
+Os preços de venda e de custo são dados do tipo DECIMAL(10, 2)
+
+Fórmula: preco = custo + (custo * margem)
