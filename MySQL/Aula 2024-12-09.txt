@@ -1,0 +1,93 @@
+Faça um relatório informando para cada linha de produto, em cada pais, em cada ano:
+- Linha de produto
+- Pais
+- Ano
+- Total de vendas ($)
+- Quantidade vendida
+
+select 
+  produtos.linhaProduto, 
+  clientes.pais, 
+  year(dataPedido) ano, 
+  sum(itempedidos.quantidadeVendida * itempedidos.precoUnitario) TotalVendas,
+  sum(quantidadeVendida) QuantidadeVendida
+from
+  linhasprodutos join produtos on produtos.linhaProduto = linhasprodutos.linhaProduto
+                 join itempedidos on itempedidos.codigoProduto = produtos.codigoProduto
+                 join pedidos on pedidos.numeroPedido = itempedidos.numeroPedido
+                 join clientes on pedidos.codigoCliente = clientes.codigoCliente
+group by linhaProduto, pais, ano;
+
+select 
+  produtos.linhaProduto, 
+  clientes.pais, 
+  year(dataPedido) ano, 
+  sum(itempedidos.quantidadeVendida * itempedidos.precoUnitario) TotalVendas,
+  sum(quantidadeVendida) QuantidadeVendida
+from
+  linhasprodutos join produtos using (linhaProduto)
+                 join itempedidos using (codigoProduto)
+                 join pedidos using (numeroPedido)
+                 join clientes using (codigoCliente)
+ group by linhaProduto, pais, ano;
+
+select 
+  produtos.linhaProduto, 
+  clientes.pais, 
+  year(dataPedido) ano, 
+  sum(itempedidos.quantidadeVendida * itempedidos.precoUnitario) TotalVendas,
+  sum(quantidadeVendida) QuantidadeVendida
+from
+  linhasprodutos natural join produtos
+                 natural join itempedidos
+                 natural join pedidos
+                 natural join clientes
+group by linhaProduto, pais, ano;
+
+select 
+  produtos.linhaProduto, 
+  clientes.pais, 
+  year(dataPedido) ano, 
+  sum(itempedidos.quantidadeVendida * itempedidos.precoUnitario) TotalVendas,
+  sum(quantidadeVendida) QuantidadeVendida
+from
+  linhasprodutos natural join produtos
+                 natural join itempedidos
+                 natural join pedidos
+                 natural join clientes
+group by linhaProduto, pais, ano with rollup;
+
+
+
+create view vw_ranking_produtos_linha_ano as
+select *, 
+  RANK() over (partition by linhaProduto, pais, ano order by valorVendaProduto DESC) ranking
+from 
+(select 
+  produtos.linhaProduto, 
+  itempedidos.codigoProduto, 
+  clientes.pais, 
+  year(dataPedido) ano,
+  sum(itempedidos.quantidadeVendida * itempedidos.precoUnitario) valorVendaProduto
+from produtos
+    join itempedidos using (codigoProduto)
+    join pedidos using(numeroPedido)
+    join clientes using(codigoCliente)
+ group by produtos.linhaProduto, itempedidos.codigoProduto, clientes.pais, ano
+) maiores
+;
+
+select 
+  produtos.linhaProduto, 
+  clientes.pais, 
+  year(dataPedido) ano, 
+  sum(itempedidos.quantidadeVendida * itempedidos.precoUnitario) TotalVendas,
+  sum(quantidadeVendida) QuantidadeVendida,
+  max((select codigoProduto from vw_ranking_produtos_linha_ano v where v.linhaProduto = produtos.linhaProduto and v.pais = clientes.pais and v.ano = year(dataPedido) and v.ranking = 1)) prodMaisVendido
+from
+  linhasprodutos natural join produtos
+                 natural join itempedidos
+                 natural join pedidos
+                 natural join clientes
+group by linhaProduto, pais, ano;
+
