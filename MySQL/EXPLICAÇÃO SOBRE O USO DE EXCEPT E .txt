@@ -1,0 +1,13 @@
+EXPLICAÇÃO SOBRE O USO DE EXCEPT E INTERSECT NO SQL (MySQL)
+
+### 1. EXCEPT NO SQL
+
+O operador **EXCEPT** no SQL é utilizado para retornar as linhas da primeira consulta que **não estão presentes** na segunda consulta. Ele é um operador de conjunto que realiza a diferença entre os resultados de duas consultas.
+
+#### Sintaxe básica:
+```sql
+SELECT coluna1, coluna2, ...
+FROM tabela1
+EXCEPT
+SELECT coluna1, coluna2, ...
+FROM tabela2;
