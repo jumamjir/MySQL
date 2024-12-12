@@ -1,0 +1,11 @@
+EXPLICAÇÃO DO EXCEPT NO SQL
+
+O operador EXCEPT no SQL é utilizado para retornar as linhas da primeira consulta que NÃO estão presentes na segunda consulta. Ele é uma operação de conjunto que compara duas consultas e remove os resultados que aparecem em ambas.
+
+### Sintaxe básica:
+```sql
+SELECT coluna1, coluna2, ...
+FROM tabela1
+EXCEPT
+SELECT coluna1, coluna2, ...
+FROM tabela2;
