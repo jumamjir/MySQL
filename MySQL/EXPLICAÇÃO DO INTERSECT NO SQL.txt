@@ -1,0 +1,11 @@
+EXPLICAÇÃO DO INTERSECT NO SQL
+
+O operador **INTERSECT** no SQL é utilizado para retornar as linhas que existem **em ambas as consultas**. Em outras palavras, ele retorna as linhas que são comuns a ambas as consultas.
+
+### Sintaxe básica:
+```sql
+SELECT coluna1, coluna2, ...
+FROM tabela1
+INTERSECT
+SELECT coluna1, coluna2, ...
+FROM tabela2;
