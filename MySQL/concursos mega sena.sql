@@ -1,3 +1,4 @@
+-- Para descobrir o numero da mega sena
 CREATE TABLE IF NOT EXISTS `concursos` (
     `Concurso` INT,
     `Data_do_Sorteio` DATETIME,
